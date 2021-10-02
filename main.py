@@ -37,6 +37,9 @@ def capture():
             break
     cap.release()
     cv2.destroyAllWindows()
+
+""" using to detect specific boxing punches
+"""
 def detect():
     mpsu()
     mp_drawing = mp.solutions.drawing_utils
