@@ -1,5 +1,6 @@
 import mediapipe as mp
 import cv2
+import time as t
 import numpy as np
 import uuid
 import os
@@ -31,14 +32,16 @@ def detect():
     mp_hands = mp.solutions.hands
     cap = cv2.VideoCapture(0)
     ft = 0
+    retract = False
     LeftArm = []
+    Ljabtimer = t.time()
+    Rcrosstimer = t.time()
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         while cap.isOpened():
             ret, frame = cap.read()  # read feed from webcam
             pic = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             val = holistic.process(pic)
             mp_drawing.draw_landmarks(pic, val.face_landmarks, mp_holistic.FACE_CONNECTIONS) # draws everything face related
-
 
             # Right hand
            # mp_drawing.draw_landmarks(pic, val.right_hand_landmarks, mp_holistic.HAND_CONNECTIONS) # rhand related
@@ -49,16 +52,19 @@ def detect():
             mp_drawing.draw_landmarks(pic, val.pose_landmarks, mp_holistic.POSE_CONNECTIONS)  # should related
             landmarks = val.pose_landmarks.landmark
             try:
+                #print(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y, "," , landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x)
                 if ft != 0:
-                    #print(prevWrist, landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y)
-                    if abs(landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y - prevLWrist) >= 0.1: # check if there is a difference between wrist position of left hand
+                    print(abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY))
+                    if t.time() - Ljabtimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY) >= 0.05:
+                        Ljabtimer = t.time()
+                        retract = True
                         cv2.putText(pic, "JAB", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
-                        #print("JAB")
-                    if abs(landmarks[mp_holistic.PoseLandmark.RIGHT_WRIST.value].y - prevRWrist) >= 0.1:
-                        cv2.putText(pic, "CROSS", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+                    if t.time() - Rcrosstimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY) >= 0.05:
+                        Rcrosstimer = t.time()
+                        cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
 
-                prevLWrist = landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y
-                prevRWrist = landmarks[mp_holistic.PoseLandmark.RIGHT_WRIST.value].y
+                prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
+                prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
                 ft = 1
                 # LeftArm.append(landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x)
                 # LeftArm.append(landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y)
