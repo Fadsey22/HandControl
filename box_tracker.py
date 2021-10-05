@@ -67,12 +67,12 @@ def detect():
             mp_drawing.draw_landmarks(pic, val.pose_landmarks, mp_holistic.POSE_CONNECTIONS)  # should related
             landmarks = val.pose_landmarks.landmark
             try:
-                LWrist = [landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].x,
-                          landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y]
-                LElbow = [landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x,
-                          landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y]
-                LShoulder = [landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x,
-                          landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y]
+                # LWrist = [landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].x,
+                #           landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y]
+                # LElbow = [landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x,
+                #           landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y]
+                # LShoulder = [landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x,
+                #           landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y]
                 #ang1 = calc_angle(LShoulder, LElbow, LWrist)
                # cv2.putText(pic, str(ang1), (80, 475), cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
                 #print(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y, "," , landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x)
@@ -85,9 +85,9 @@ def detect():
                         Rcrosstimer = t.time()
                         cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
 
-                    prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
-                    prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
-                    ft = 1
+                prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
+                prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
+                ft = 1
 
             except Exception as e:
                 print(f"Cant find: {e}")
@@ -148,7 +148,6 @@ def handdetect():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-   # handdetect()
     detect()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
