@@ -51,6 +51,8 @@ def detect():
     LeftArm = []
     Ljabtimer = t.time()
     Rcrosstimer = t.time()
+    Jcounter = 0
+    Rcounter = 0
     with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
         while cap.isOpened():
             ret, frame = cap.read()  # read feed from webcam
@@ -67,23 +69,37 @@ def detect():
             mp_drawing.draw_landmarks(pic, val.pose_landmarks, mp_holistic.POSE_CONNECTIONS)  # should related
             landmarks = val.pose_landmarks.landmark
             try:
-                # LWrist = [landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].x,
-                #           landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y]
-                # LElbow = [landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x,
-                #           landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y]
-                # LShoulder = [landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x,
-                #           landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y]
-                #ang1 = calc_angle(LShoulder, LElbow, LWrist)
-               # cv2.putText(pic, str(ang1), (80, 475), cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
+                LWrist = [landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].x,
+                          landmarks[mp_holistic.PoseLandmark.LEFT_WRIST.value].y]
+                LElbow = [landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x,
+                          landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y]
+                LShoulder = [landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x,
+                          landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y]
+                ang1 = calc_angle(LShoulder, LElbow, LWrist)
+                # cv2.putText(pic, "x:" + str(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x), (80, 475), cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
+                # cv2.putText(pic, "y:" + str(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y), (80, 300),
+                #             cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
+                # cv2.putText(pic, "a:" + str(ang1), (80, 200),cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
                 #print(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y, "," , landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x)
                 if ft != 0:
-                    if t.time() - Ljabtimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY) >= 0.05:
+                    cv2.putText(pic, "JABS:" + str(Jcounter), (80, 100), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+                    cv2.putText(pic, "C:" + str(Rcounter), (40, 300), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0),10)
+                    if t.time() - Ljabtimer >= 0.5 and landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY > 0.05:
+                        Jcounter += 1
                         Ljabtimer = t.time()
-                        retract = True
-                        cv2.putText(pic, "JAB", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
-                    if t.time() - Rcrosstimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY) >= 0.05:
+                        cv2.putText(pic, "JAB", (80, 200), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+                    if t.time() - Rcrosstimer >= 0.5 and landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY > 0.05:
+                        Rcounter += 1
                         Rcrosstimer = t.time()
                         cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+
+                    # if t.time() - Ljabtimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY) >= 0.05:
+                    #     Ljabtimer = t.time()
+                    #     retract = True
+                    #     cv2.putText(pic, "JAB", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+                    # if t.time() - Rcrosstimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY) >= 0.05:
+                    #     Rcrosstimer = t.time()
+                    #     cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
 
                 prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
                 prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
