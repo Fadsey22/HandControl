@@ -73,24 +73,22 @@ def detect():
                           landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y]
                 LShoulder = [landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x,
                           landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y]
-                ang1 = calc_angle(LShoulder, LElbow, LWrist)
-                cv2.putText(pic, str(ang1), (80, 475), cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
+                #ang1 = calc_angle(LShoulder, LElbow, LWrist)
+               # cv2.putText(pic, str(ang1), (80, 475), cv2.FONT_HERSHEY_COMPLEX, 2, (200, 0, 0), 10)
                 #print(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y, "," , landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].x)
-                # if ft != 0:
-                #     if t.time() - Ljabtimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY) >= 0.05:
-                #         Ljabtimer = t.time()
-                #         retract = True
-                #         cv2.putText(pic, "JAB", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
-                #     if t.time() - Rcrosstimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY) >= 0.05:
-                #         Rcrosstimer = t.time()
-                #         cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
-                #
-                # prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
-                # prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
-                ft = 1
-                # LeftArm.append(landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].x)
-                # LeftArm.append(landmarks[mp_holistic.PoseLandmark.LEFT_SHOULDER.value].y)
-               # print(LeftArm[0],LeftArm[1])
+                if ft != 0:
+                    if t.time() - Ljabtimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y - prevLElbowY) >= 0.05:
+                        Ljabtimer = t.time()
+                        retract = True
+                        cv2.putText(pic, "JAB", (80, 375), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+                    if t.time() - Rcrosstimer >= 0.5 and abs(landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y - prevRElbowY) >= 0.05:
+                        Rcrosstimer = t.time()
+                        cv2.putText(pic, "CROSS", (80, 475), cv2.FONT_HERSHEY_COMPLEX, 4, (200, 0, 0), 10)
+
+                    prevLElbowY = landmarks[mp_holistic.PoseLandmark.LEFT_ELBOW.value].y
+                    prevRElbowY = landmarks[mp_holistic.PoseLandmark.RIGHT_ELBOW.value].y
+                    ft = 1
+
             except Exception as e:
                 print(f"Cant find: {e}")
 
